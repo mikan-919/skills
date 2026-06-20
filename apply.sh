@@ -22,19 +22,14 @@ list_skills() {
   done
 }
 
-link_one() {
-  local name="$1"
-  local src="$REPO_DIR/$name"
-  local dest="$SKILLS_DIR/$name"
-  local dest2="$AGENTS_SKILLS_DIR/$name"
+# link_into <skills-dir> <name> <src> — refresh a symlink in one target dir.
+# Uses `-h`/`-L` so an existing link is removed (not followed) before relinking,
+# which keeps re-runs from nesting a self-link inside the symlinked directory.
+link_into() {
+  local dir="$1" name="$2" src="$3"
+  local dest="$dir/$name"
 
-  if ! is_skill "$name"; then
-    echo "error: '$name' is not a skill here (no $name/SKILL.md)" >&2
-    return 1
-  fi
-
-  mkdir -p "$SKILLS_DIR"
-  mkdir -p "$AGENTS_SKILLS_DIR"
+  mkdir -p "$dir"
 
   if [[ -L "$dest" ]]; then
     rm "$dest"                      # refresh an existing symlink
@@ -44,9 +39,20 @@ link_one() {
   fi
 
   ln -s "$src" "$dest"
-  ln -s "$src" "$dest2"
   echo "linked  $dest -> $src"
-  echo "linked  $dest2 -> $src"
+}
+
+link_one() {
+  local name="$1"
+  local src="$REPO_DIR/$name"
+
+  if ! is_skill "$name"; then
+    echo "error: '$name' is not a skill here (no $name/SKILL.md)" >&2
+    return 1
+  fi
+
+  link_into "$SKILLS_DIR" "$name" "$src"
+  link_into "$AGENTS_SKILLS_DIR" "$name" "$src"
 }
 
 main() {
