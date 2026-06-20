@@ -10,7 +10,8 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
+SKILLS_DIR="${SKILLS_DIR:-$HOME/.claude/skills}"
+AGENTS_SKILLS_DIR="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
 
 is_skill() { [[ -f "$REPO_DIR/$1/SKILL.md" ]]; }
 
@@ -25,6 +26,7 @@ link_one() {
   local name="$1"
   local src="$REPO_DIR/$name"
   local dest="$SKILLS_DIR/$name"
+  local dest2="$AGENTS_SKILLS_DIR/$name"
 
   if ! is_skill "$name"; then
     echo "error: '$name' is not a skill here (no $name/SKILL.md)" >&2
@@ -32,6 +34,7 @@ link_one() {
   fi
 
   mkdir -p "$SKILLS_DIR"
+  mkdir -p "$AGENTS_SKILLS_DIR"
 
   if [[ -L "$dest" ]]; then
     rm "$dest"                      # refresh an existing symlink
@@ -41,7 +44,9 @@ link_one() {
   fi
 
   ln -s "$src" "$dest"
+  ln -s "$src" "$dest2"
   echo "linked  $dest -> $src"
+  echo "linked  $dest2 -> $src"
 }
 
 main() {
