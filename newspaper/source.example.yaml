@@ -1,0 +1,17 @@
+# Newspaper sources: URL + category, optional `type` (feed | page; omit to auto-detect).
+# Feeds are RSS/Atom. Pages are HTML news indexes that have no feed.
+
+- url: https://arxiv.org/rss/cs.AI
+  category: 論文
+- url: https://arxiv.org/rss/cs.CL
+  category: 論文
+- url: https://zenn.dev/tech/feed.xml
+  category: 技術記事
+
+# Non-RSS news pages — fetched as HTML index pages:
+- url: https://www.anthropic.com/news
+  category: LLM Provider
+  type: page
+- url: https://openai.com/news/
+  category: LLM Provider
+  type: page
